@@ -12,16 +12,15 @@ public class Lift extends Thread {
 
 	public void run() {
 		lv.drawLift(0, 4);
+		monitor.setNextFloor(nextFloor(monitor.currentFloor()));
 		while (true) {
 			int currentFloor = monitor.currentFloor();
 			int nextFloor = monitor.nextFloor();
 			if (currentFloor != nextFloor) {
 				System.out.println("Current Floor: " + currentFloor + " Next Floor: " + nextFloor);
 				lv.moveLift(currentFloor, nextFloor);
-				monitor.setNextFloor(nextFloor(currentFloor));
-			} else {
-				monitor.setNextFloor(nextFloor(currentFloor));
-			}
+				monitor.setNextFloor(nextFloor(nextFloor));
+			} 
 		}
 	}
 
