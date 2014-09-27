@@ -16,7 +16,7 @@ public class Simulation extends Thread {
 	
 	public void run() {
 		for (int i = 0; i < MAX_PEOPLE; i++) {
-			people[i] = new Person();
+			people[i] = new Person(monitor);
 		}
 		while (true) {
 			try {
@@ -24,9 +24,11 @@ public class Simulation extends Thread {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
+
+            //Är detta nödvändigt? Vi återanvänder väl samma 20 objekt hela tiden och på så sätt dör de aldrig (run metoden terminerar aldrig)
 			for (int i = 0; i < MAX_PEOPLE; i++) {
 				if (!people[i].isAlive()) {
-					people[i] = new Person();
+					people[i] = new Person(monitor);
 				}
 			}
 		
