@@ -27,7 +27,7 @@ public class Person extends Thread {
             }
 
             if (!inLift) {
-                while (monitor.currentFloor() != startFloor && monitor.isLiftFull()) try {
+                while (monitor.currentFloor() != startFloor && monitor.isLiftFull()) try { //Väntar om hissen inte är på vår våning alt. full. Måste också på något sätt göra så att Person lämnar hissen innan monitor.isLiftFull() kallas.
                     wait();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
