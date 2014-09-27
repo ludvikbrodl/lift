@@ -35,6 +35,7 @@ public class Lift extends Thread {
 		if (!movingUp) {
 			if (current <= 0) {
 				movingUp = true;
+				current++;
 			} else {
 				current--;
 			}
