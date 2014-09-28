@@ -12,7 +12,12 @@ public class Monitor {
     int load; // The number of people currently occupying the lift.
 
 
-    public int currentFloor() {
+    public Monitor() {
+        waitEntry = new int[7];
+        waitExit = new int[7];
+    }
+
+    synchronized int currentFloor() {
         return here;
     }
 
@@ -21,6 +26,8 @@ public class Monitor {
     }
 
     synchronized public void setNextFloor(int nextFloor) {
+        waitExit[next] = 0;
+        System.out.println("On floor: " + next);
         here = next;
         next = nextFloor;
         notifyAll();
@@ -30,8 +37,17 @@ public class Monitor {
         return next;
     }
 
-    //sync to avoid multiple Person entering a lift at the same time in this way fill the lift with more than 4 Person.
-    synchronized boolean isLiftFull() {
-        return waitExit.length == 4;
+    //synchronized to avoid multiple Person entering a lift at the same time in this way fill the lift with more than 4 Person.
+    synchronized boolean okToEnter() {
+        if (waitExit.length <= 4) {
+            waitEntry[here]--;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    synchronized void requestToEnter(int startFloor) {
+        waitEntry[startFloor]++;
     }
 }
