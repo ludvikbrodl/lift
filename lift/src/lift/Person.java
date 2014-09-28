@@ -30,7 +30,6 @@ public class Person extends Thread {
                         synchronized (this) { //Får ej göra såhär
                             wait();
                         }
-
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
