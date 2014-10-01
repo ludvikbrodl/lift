@@ -1,7 +1,7 @@
 package lift;
 
 public class Simulation {
-    private static final int MAX_PEOPLE = 10;
+    private static final int MAX_PEOPLE = 20;
     private LiftView lv;
     private Monitor monitor;
     private Person[] people;

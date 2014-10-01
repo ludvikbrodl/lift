@@ -11,8 +11,8 @@ public class Person extends Thread {
     public Person(Monitor monitor) {
         this.monitor = monitor;
         rand = new Random();
-        startFloor = rand.nextInt(6);
-        goalFloor = rand.nextInt(6);
+        startFloor = rand.nextInt(7);
+        goalFloor = rand.nextInt(7);
         tempFixSameRandomNbr();
     }
 
@@ -20,10 +20,10 @@ public class Person extends Thread {
         while (true) {
             monitor.okToEnter(startFloor, goalFloor);
             startFloor = goalFloor;
-            goalFloor = rand.nextInt(6);
+            goalFloor = rand.nextInt(7);
             tempFixSameRandomNbr();
             try {
-                sleep(1000 * ((int) (Math.random() * 2.00000)));
+                sleep(1000 * ((int) (Math.random() * 46.00000)));
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

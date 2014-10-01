@@ -26,7 +26,8 @@ public class Monitor {
 	synchronized public void okToEnter(int startFloor, int goalFloor) {
 		waitEntry[startFloor]++;
 		lv.drawLevel(startFloor, waitEntry[startFloor]);
-		while (startFloor != here || load >= 4 || here != next) {
+        notifyAll();
+        while (startFloor != here || load >= 4 || here != next) {
 			try {
 				wait();
 			} catch (InterruptedException e) {
@@ -39,15 +40,8 @@ public class Monitor {
 		load++;
 		lv.drawLevel(startFloor, waitEntry[startFloor]);
 		lv.drawLift(here, load);
-		// System.out.println(load);
-		boolean ingenVillIn = waitEntry[here] == 0;
-		boolean ingenVillUt = waitExit[here] == 0;
-	    boolean hissenFull = load >= 4;
-	    System.out.println(ingenVillUt && hissenFull);
-		if (ingenVillIn && ingenVillUt || ingenVillUt && hissenFull) {
-			okToMove = true;
-		}
 		notifyAll();
+
 		while (goalFloor != here || here != next) {
 			try {
 				wait();
@@ -59,23 +53,18 @@ public class Monitor {
 		load--;
 		System.out.println("exit");
 		lv.drawLift(here, load);
-		ingenVillIn = waitEntry[here] == 0;
-		ingenVillUt = waitExit[here] == 0;
-	    hissenFull = load >= 4;
-		if (ingenVillIn && ingenVillUt || ingenVillUt && hissenFull) {
-			okToMove = true;
-		}
 		notifyAll();
 	}
 
 	synchronized public int okToMoveLift() {
 		here = next;
 		notifyAll();
-		if ((waitEntry[here] == 0 && waitExit[here] == 0)) {
-			next = nextFloor(here);
-			return next;
-		}
-		while (!okToMove) {
+//		if ((waitEntry[here] == 0 && waitExit[here] == 0)) {
+//			next = nextFloor(here);
+//			return next;
+//		}
+
+		while (waitEntry[here] > 0 && load < 4 || waitExit[here] > 0) {
 			try {
 				wait();
 			} catch (InterruptedException e) {
