@@ -19,41 +19,19 @@ public class Person extends Thread {
 
     public void run() {
 
-
-        monitor.requestToEnter(startFloor);
-
         while (true) {
+            monitor.okToEnter(startFloor, goalFloor);
 
-            if (!inLift) {
-                while (monitor.currentFloor() != startFloor && !monitor.okToEnter()) {
-                    try { //Väntar om hissen inte är på vår våning alt. full. Måste också på något sätt göra så att Person lämnar hissen innan monitor.okToEnter() kallas.
-                        synchronized (this) { //Får ej göra såhär
-                            wait();
-                        }
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-                System.out.println("Entering on floor: " + startFloor);
-                inLift = true;
+            System.out.println("Entering on floor: " + startFloor);
+            inLift = true;
 
-            } else if (inLift) {
-                while (monitor.currentFloor() != goalFloor) {
-                    System.out.println("Waiting to leave");
-                    try {
-                        synchronized (this) {
-                            wait();
-                        }
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-                inLift = false;
-                System.out.println("Leaving on floor: " + goalFloor);
-                startFloor = rand.nextInt(6);
-                goalFloor = rand.nextInt(6);
-                tempFixSameRandomNbr();
-            }
+            System.out.println("Waiting to leave");
+
+
+            inLift = false;
+            System.out.println("Leaving on floor: " + goalFloor);
+            goalFloor = rand.nextInt(6);
+            tempFixSameRandomNbr();
 
 
             try {
