@@ -4,7 +4,6 @@ import java.util.Random;
 
 public class Person extends Thread {
     private final Random rand;
-    private boolean inLift;
     private Monitor monitor;
     int startFloor;
     int goalFloor;
@@ -18,24 +17,13 @@ public class Person extends Thread {
     }
 
     public void run() {
-
         while (true) {
             monitor.okToEnter(startFloor, goalFloor);
-
-            System.out.println("Entering on floor: " + startFloor);
-            inLift = true;
-
-            System.out.println("Waiting to leave");
-
-
-            inLift = false;
-            System.out.println("Leaving on floor: " + goalFloor);
+            startFloor = goalFloor;
             goalFloor = rand.nextInt(6);
             tempFixSameRandomNbr();
-
-
             try {
-                sleep(1000 * ((int) (Math.random() * 46.0)));
+                sleep(1000 * ((int) (Math.random() * 2.00000)));
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

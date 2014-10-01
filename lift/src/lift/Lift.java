@@ -13,11 +13,10 @@ public class Lift extends Thread {
     }
 
     public void run() {
-        lv.drawLift(0, 4);
         int moveTo = 0;
         while (true) {
             moveTo = monitor.okToMoveLift();
-            System.out.println("Current Floor: " + currentFloor + " Next Floor: " + moveTo);
+//            System.out.println("Current Floor: " + currentFloor + " Next Floor: " + moveTo);
 
             lv.moveLift(currentFloor, moveTo);
             currentFloor = moveTo;
