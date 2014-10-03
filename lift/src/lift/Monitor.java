@@ -10,38 +10,59 @@ public class Monitor {
 	int[] waitExit; // The number of persons (inside the lift) waiting to leave
 	// the lift at the various floors.
 	int load; // The number of people currently occupying the lift.
-	private boolean okToMove;
 	private boolean movingUp;
 	private LiftView lv;
 
 	public Monitor(LiftView lv) {
-		waitEntry = new int[7];
-		waitExit = new int[7];
+		waitEntry = new int[LiftView.NO_OF_FLOORS];
+		waitExit = new int[LiftView.NO_OF_FLOORS];
 		movingUp = true;
 		this.lv = lv;
 	}
 
-	// synchronized to avoid multiple Person entering a lift at the same time in
-	// this way fill the lift with more than 4 Person.
-	synchronized public void okToEnter(int startFloor, int goalFloor) {
+	synchronized public void movePerson(int startFloor, int goalFloor) {
+		callLift(startFloor);
+        enterLiftAndPressButton(startFloor, goalFloor);
+		waitForRightFloorAndExit(goalFloor);
+	}
+	
+	/*
+	 * notify is called because waitEntry is modified, which could
+	 * cause the while statement in moveLift to change to false;
+	 */
+	private void callLift(int startFloor) {
 		waitEntry[startFloor]++;
 		lv.drawLevel(startFloor, waitEntry[startFloor]);
-        notifyAll();
-        while (startFloor != here || load >= 4 || here != next) {
+		notifyAll();
+	}
+
+	/*
+	 * notify is called because the lift can now be at maximum
+	 * capacity inducing a move or be the last person to enter
+	 * the lift which would also induce a move of the lift.
+	 */
+	private void enterLiftAndPressButton(int startFloor, int goalFloor) {
+		while (startFloor != here || load >= 4 || here != next) {
 			try {
 				wait();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
-		System.out.println("to floor " + goalFloor);
 		waitEntry[here]--;
 		waitExit[goalFloor]++;
 		load++;
 		lv.drawLevel(startFloor, waitEntry[startFloor]);
 		lv.drawLift(here, load);
 		notifyAll();
+	}
 
+	/*
+	 * The number of people in the elevator decreases thus 
+	 * creating room for another person to enter, which is why notify
+	 * is called.
+	 */
+	private void waitForRightFloorAndExit(int goalFloor) {
 		while (goalFloor != here || here != next) {
 			try {
 				wait();
@@ -51,19 +72,17 @@ public class Monitor {
 		}
 		waitExit[goalFloor]--;
 		load--;
-		System.out.println("exit");
 		lv.drawLift(here, load);
 		notifyAll();
 	}
 
-	synchronized public int okToMoveLift() {
+	/*
+	 * Notify person threads that we are at new floor and thusly allowing
+	 * them to enter or leave the lift.
+	 */
+	synchronized public int moveLift() {
 		here = next;
 		notifyAll();
-//		if ((waitEntry[here] == 0 && waitExit[here] == 0)) {
-//			next = nextFloor(here);
-//			return next;
-//		}
-
 		while (waitEntry[here] > 0 && load < 4 || waitExit[here] > 0) {
 			try {
 				wait();
@@ -71,11 +90,13 @@ public class Monitor {
 				e.printStackTrace();
 			}
 		}
-		okToMove = false;
 		next = nextFloor(here);
 		return next;
 	}
 
+	/*
+	 * Lift AI.
+	 */
 	synchronized private int nextFloor(int current) {
 		if (movingUp) {
 			if (current >= LiftView.NO_OF_FLOORS - 1) {

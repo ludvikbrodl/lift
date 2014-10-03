@@ -1,20 +1,14 @@
 package lift;
 
 public class Simulation {
-    private static final int MAX_PEOPLE = 20;
-    private LiftView lv;
-    private Monitor monitor;
-    private Person[] people;
+	private static final int MAX_PEOPLE = 20;
 
-    public Simulation() {
-        lv = new LiftView();
-        monitor = new Monitor(lv);
-        Lift lift = new Lift(lv, monitor);
-        lift.start();
-        people = new Person[MAX_PEOPLE];
-        for (int i = 0; i < MAX_PEOPLE; i++) {
-            people[i] = new Person(monitor);
-            people[i].start();
-        }
-    }
+	public Simulation() {
+		LiftView liftView = new LiftView();
+		Monitor monitor = new Monitor(liftView);
+		for (int i = 0; i < MAX_PEOPLE; i++) {
+			new Person(monitor).start();
+		}
+		new Lift(liftView, monitor).start();
+	}
 }

@@ -3,7 +3,6 @@ package lift;
 public class Lift extends Thread {
     private LiftView lv;
     private Monitor monitor;
-    private boolean movingUp = true;
     private int currentFloor;
 
     public Lift(LiftView lv, Monitor monitor) {
@@ -15,9 +14,7 @@ public class Lift extends Thread {
     public void run() {
         int moveTo = 0;
         while (true) {
-            moveTo = monitor.okToMoveLift();
-//            System.out.println("Current Floor: " + currentFloor + " Next Floor: " + moveTo);
-
+            moveTo = monitor.moveLift();
             lv.moveLift(currentFloor, moveTo);
             currentFloor = moveTo;
         }

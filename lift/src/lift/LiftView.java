@@ -1,7 +1,9 @@
 package lift;
 import javax.swing.*;
+
 import java.awt.event.*;
 import java.awt.*;
+import java.util.Random;
 
 
 public class LiftView {
@@ -84,18 +86,6 @@ public class LiftView {
 		} catch(InterruptedException e) { }
 	}
 
-
-	public static void main(String[] args) {
-		LiftView lv = new LiftView();
-		lv.drawLift(0,3);
-		lv.drawLevel(5,4);
-		try {
-			Thread.sleep(1000);
-		} catch(InterruptedException e) { }
-		lv.moveLift(0,1);
-		lv.drawLift(1,2);
-	}
-
 	private class FixedSizePanel extends JPanel {
 		private static final long serialVersionUID = 1L;
 		private Dimension dim;
@@ -168,7 +158,7 @@ public class LiftView {
 			for(animateX=0;animateX<width;animateX+=20) {
 				repaint();
 				try {
-					Thread.sleep(100);
+					Thread.sleep(10);
 				} catch(InterruptedException e) { }
 			}
 			animateX = 0;
@@ -189,7 +179,8 @@ public class LiftView {
 			noOfFloors = nof;
 			floorHeight = fh;
 			load = 0;
-			setBackground(Color.YELLOW);
+			Random rand = new Random();
+			setBackground(new Color(rand.nextInt(256), rand.nextInt(256), rand.nextInt(256)));
 			shaft.add(this);
 			setLocation(2,(nof-1)*fh);
 		}
@@ -213,18 +204,20 @@ public class LiftView {
 		public void moveBasket(int from, int to) {
 			int start = floorOffset(from);
 			int stop = floorOffset(to);
+			Random rand = new Random();
+			setBackground(new Color(rand.nextInt(256), rand.nextInt(256), rand.nextInt(256)));
 			if (start<stop) {
 				for(int y=start;y<stop;y+=INCREMENT) {
 					setLocation(2,y);
 					try {
-						Thread.sleep(50);
+						Thread.sleep(5);
 					} catch(InterruptedException e) { }
 				}
 			} else {
 				for(int y=start;y>stop;y-=INCREMENT) {
 					setLocation(2,y);
 					try {
-						Thread.sleep(50);
+						Thread.sleep(5);
 					} catch(InterruptedException e) { }
 				}
 			}
@@ -246,9 +239,9 @@ class PersonDrawer {
 		g.drawLine(x,y,x+12,y-30);
 		g.drawLine(x+12,y-30,x+24,y);
 		g.drawLine(x+12,y-30,x+12,y-55);
-		g.drawLine(x+12,y-55,x,y-35);
+		g.drawLine(x+12,y-55,x,y-45);
 		g.drawLine(x+12,y-55,x+24,y-35);
-		g.drawOval(x+5,y-70,15,15);
+		g.drawOval(x+5,y-70,25,25);
 	}
 
 	public static void erase(Graphics g,int x,int y) {
